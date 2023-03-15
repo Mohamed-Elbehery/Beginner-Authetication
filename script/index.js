@@ -9,6 +9,10 @@ const loginBtn = document.querySelector("#login");
 const links = document.querySelectorAll("header nav ul li a");
 const cards = document.querySelectorAll(".landing .cards .card");
 const cardsImages = document.querySelectorAll(".landing .cards .card img");
+const checkBtn = document.querySelector("#check-btn");
+let checkedEmail = {};
+let isHere = false;
+const saveBtn = document.querySelector("#save-btn");
 //! Error spans
 const usernameError = document.querySelector("#name-error");
 const emailError = document.querySelector("#email-error");
@@ -72,6 +76,7 @@ const signup = () => {
 
 // Will be triggered when the login button is clicked
 const login = () => {
+  localStorage.removeItem("checkedEmail");
   if (email.value == "") {
     if (emailError) emailError.innerHTML = "Email is Required";
   } else if (password.value == "") {
@@ -106,6 +111,44 @@ const logout = () => {
   window.open("login.html", "_self");
 };
 
+// Will check if the user is in the users array
+const checkEmail = () => {
+  users.forEach((user) => {
+    if (user.email == email.value) {
+      isHere = true;
+    }
+  });
+  if (isHere) {
+    checkedEmail = users.filter((user) => user.email == email.value)[0];
+    localStorage.setItem("checkedEmail", JSON.stringify(checkedEmail));
+    email.value = "";
+    window.open("reset-password.html", "_self");
+  }
+};
+
+// Will save the changes in the checked email
+const saveChanges = () => {
+  if (
+    password.value == confirmPassword.value &&
+    password.value != "" &&
+    confirmPassword.value != ""
+  ) {
+    checkedEmail.password = password.value;
+    checkedEmail.confirmPassword = confirmPassword.value;
+    localStorage.setItem("checkedEmail", JSON.stringify(checkedEmail));
+
+    users.forEach((user) => {
+      if (user.email == checkedEmail.email) {
+        user.password = checkedEmail.password;
+      }
+    });
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    window.open("login.html", "_self");
+  }
+};
+
 // Will be triggered on each key press
 const validate = (selector, span, errorValue) => {
   if (selector.value.length > 0) {
@@ -124,6 +167,8 @@ const handleSubmit = (e) => {
 if (form) form.addEventListener("submit", handleSubmit);
 if (signupBtn) signupBtn.addEventListener("click", signup);
 if (loginBtn) loginBtn.addEventListener("click", login);
+if (checkBtn) checkBtn.addEventListener("click", checkEmail);
+if (saveBtn) saveBtn.addEventListener("click", saveChanges);
 
 //! Validation Styles
 if (username)
@@ -272,5 +317,9 @@ window.addEventListener("load", () => {
     JSON.parse(localStorage.loggedUser).email !== admin
   ) {
     window.open("home.html", "_self");
+  }
+
+  if (localStorage.checkedEmail) {
+    checkedEmail = JSON.parse(localStorage.checkedEmail);
   }
 });
