@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/global.css" />
+    <title>Registration Page</title>
+  </head>
+  <body>
+    <h1 class="title signup">Signup</h1>
+    <form>
+      <div>
+        <label>Name</label>
+        <span id="name-error" class="error"></span>
+        <input type="text" placeholder="Enter Your Name..." />
+      </div>
+      <div>
+        <label>Email</label>
+        <span id="email-error" class="error"></span>
+        <input type="email" placeholder="Enter Your Email..." />
+      </div>
+      <div>
+        <label>Password</label>
+        <span id="password-error" class="error"></span>
+        <input
+          id="password"
+          type="password"
+          placeholder="Enter Your Pasword..."
+        />
+      </div>
+      <div>
+        <label>Confirm Password</label>
+        <span id="confirm-error" class="error"></span>
+        <input
+          id="confirm-password"
+          type="password"
+          placeholder="Confirm Your Pasword..."
+        />
+      </div>
+      <span id="error" class="error"></span>
+      <button id="signup">Signup</button>
+      <a href="login.html">You Have an Account ? Login</a>
+    </form>
+    <script src="./script/index.js"></script>
+  </body>
+</html>
