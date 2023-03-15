@@ -18,7 +18,8 @@ const error = document.querySelector("#error");
 let users = [];
 
 //! Admin Account
-const admin = "admin";
+const adminName = "Admin";
+const admin = "admin@amit.com";
 const adminPassword = "admin";
 
 //! Functions
@@ -77,6 +78,18 @@ const login = () => {
     users.forEach((user) => {
       if (email.value == user.email && password.value == user.password) {
         localStorage.setItem("loggedUser", JSON.stringify(user));
+        setTimeout(() => {
+          window.open("home.html", "_self");
+        }, 1000);
+      } else if (email.value == admin && password.value == adminPassword) {
+        localStorage.setItem(
+          "loggedUser",
+          JSON.stringify({
+            username: adminName,
+            email: admin,
+            password: "admin",
+          })
+        );
         setTimeout(() => {
           window.open("home.html", "_self");
         }, 1000);
