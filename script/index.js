@@ -7,12 +7,17 @@ const confirmPassword = document.querySelector("#confirm-password");
 const signupBtn = document.querySelector("#signup");
 const loginBtn = document.querySelector("#login");
 const links = document.querySelectorAll("header nav ul li a");
+const cardsContainer = document.querySelector(".landing .cards");
 const cards = document.querySelectorAll(".landing .cards .card");
 const cardsImages = document.querySelectorAll(".landing .cards .card img");
 const checkBtn = document.querySelector("#check-btn");
 let checkedEmail = {};
 let isHere = false;
 const saveBtn = document.querySelector("#save-btn");
+const addBtn = document.querySelector("#add-btn");
+const imgUrl = document.querySelector("#img-url");
+const description = document.querySelector("#description");
+let posts = [];
 //! Error spans
 const usernameError = document.querySelector("#name-error");
 const emailError = document.querySelector("#email-error");
@@ -149,6 +154,44 @@ const saveChanges = () => {
   }
 };
 
+const addPost = () => {
+  let post = {
+    imgUrl: imgUrl.value,
+    description: description.value,
+  };
+
+  setTimeout(() => {
+    imgUrl.value = description.value = "";
+  }, 300);
+
+  posts.push(post);
+  localStorage.setItem("posts", JSON.stringify(posts));
+};
+
+const displayPosts = () => {
+  posts.forEach((card) => {
+    const cardDiv = document.createElement("div");
+    cardDiv.classList.add("card");
+    // Image
+    const cardImgContainer = document.createElement("div");
+    cardImgContainer.classList.add("card-img");
+    const cardImg = document.createElement("img");
+    cardImg.setAttribute("src", card.imgUrl);
+    cardDiv.append(cardImgContainer);
+    cardImgContainer.append(cardImg);
+    // Info
+    const cardInfo = document.createElement("div");
+    cardInfo.classList.add("card-info");
+    const cardParagraph = document.createElement("p");
+    cardParagraph.innerHTML = card.description;
+    cardInfo.append(cardParagraph);
+    cardDiv.append(cardInfo);
+
+    // Add to Cards Container
+    if (cardsContainer) cardsContainer.appendChild(cardDiv);
+  });
+};
+
 // Will be triggered on each key press
 const validate = (selector, span, errorValue) => {
   if (selector.value.length > 0) {
@@ -169,6 +212,7 @@ if (signupBtn) signupBtn.addEventListener("click", signup);
 if (loginBtn) loginBtn.addEventListener("click", login);
 if (checkBtn) checkBtn.addEventListener("click", checkEmail);
 if (saveBtn) saveBtn.addEventListener("click", saveChanges);
+if (addBtn) addBtn.addEventListener("click", addPost);
 
 //! Validation Styles
 if (username)
@@ -273,7 +317,7 @@ window.addEventListener("load", () => {
     <nav>
       <ul>
       <li><a href="home.html">Home</a></li>
-      <li><a href="soon.html">Soon</a></li>
+      <li><a href="add-posts.html">Add</a></li>
       <li class="user">Hello, ${
         JSON.parse(localStorage.loggedUser).username
       }</li>
@@ -313,7 +357,7 @@ window.addEventListener("load", () => {
   });
 
   if (
-    window.location.pathname === "/Beginner-Authetication/soon.html" &&
+    window.location.pathname === "/Beginner-Authetication/add-posts.html" &&
     JSON.parse(localStorage.loggedUser).email !== admin
   ) {
     window.open("home.html", "_self");
@@ -322,4 +366,10 @@ window.addEventListener("load", () => {
   if (localStorage.checkedEmail) {
     checkedEmail = JSON.parse(localStorage.checkedEmail);
   }
+
+  if (localStorage.posts) {
+    posts = JSON.parse(localStorage.posts);
+  }
+
+  displayPosts();
 });

@@ -70,7 +70,8 @@ form label {
   align-self: flex-start;
 }
 
-form input {
+form input,
+form textarea {
   background-color: transparent;
   border: 2px solid lightgray;
   padding: 0.5rem 1rem;
@@ -80,16 +81,19 @@ form input {
   color: lightgray;
 }
 
-form input::placeholder {
+form input::placeholder,
+form textarea::placeholder {
   color: rgba(211, 211, 211, 0.65);
   transition: 0.35s ease-out;
 }
 
-form input:focus::placeholder {
+form input:focus::placeholder,
+form textarea:focus::placeholder {
   opacity: 0;
 }
 
-form input:focus {
+form input:focus,
+form textarea:focus {
   border-radius: 0.5rem;
 }
 
@@ -209,7 +213,7 @@ section .cards .card-img img {
 
 section .cards .card .card-info {
   position: absolute;
-  inset: auto auto -100% 0;
+  inset: auto 0 -100% 0;
   padding: 1rem;
   background-color: rgba(255, 144, 117, 0.75);
   border-radius: 0.5rem;
