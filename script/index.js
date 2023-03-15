@@ -23,6 +23,7 @@ const admin = "admin@amit.com";
 const adminPassword = "admin";
 
 //! Functions
+// Will be triggered when the signup button is clicked
 const signup = () => {
   let isDuplicated = false;
   if (username.value == "") {
@@ -69,6 +70,7 @@ const signup = () => {
   }
 };
 
+// Will be triggered when the login button is clicked
 const login = () => {
   if (email.value == "") {
     if (emailError) emailError.innerHTML = "Email is Required";
@@ -98,11 +100,13 @@ const login = () => {
   }
 };
 
+// Will be triggered when the logut button is clicked
 const logout = () => {
   localStorage.removeItem("loggedUser");
   window.open("login.html", "_self");
 };
 
+// Will be triggered on each key press
 const validate = (selector, span, errorValue) => {
   if (selector.value.length > 0) {
     if (span) span.innerHTML = "";
@@ -111,6 +115,7 @@ const validate = (selector, span, errorValue) => {
   }
 };
 
+// Will prevent the form from submitting
 const handleSubmit = (e) => {
   e.preventDefault();
 };
@@ -142,7 +147,7 @@ if (confirmPassword)
 window.addEventListener("load", () => {
   if (localStorage.users) users = JSON.parse(localStorage.users);
 
-  // if the user is not logged in
+  //* if the user is not logged in
   if (!localStorage.loggedUser) {
     const header = document.createElement("header");
     header.innerHTML = `
@@ -185,9 +190,10 @@ window.addEventListener("load", () => {
       });
     });
   } else {
-    // if the user is logged in
-    const header = document.createElement("header");
-    header.innerHTML = `
+    //* if the user is logged in
+    if (JSON.parse(localStorage.loggedUser).email != admin) {
+      const header = document.createElement("header");
+      header.innerHTML = `
     <div class="logo">
       <h1><a href="home.html">Zoro</a></h1>
       </div>
@@ -200,10 +206,10 @@ window.addEventListener("load", () => {
         <li><a class="logout" onclick="logout()">Logout</a></li>
         </ul>
         </nav>`;
-    document.body.prepend(header);
+      document.body.prepend(header);
 
-    cards.forEach((card) => {
-      card.innerHTML += `
+      cards.forEach((card) => {
+        card.innerHTML += `
           <div class="card-info">
             <p>
               Roronoa Zoro, also known as "Pirate Hunter" Zoro, is a fictional
@@ -211,10 +217,40 @@ window.addEventListener("load", () => {
             </p>
           </div>
         `;
-    });
+      });
+    } else {
+      //* if the admin is logged in
+      const header = document.createElement("header");
+      header.innerHTML = `
+    <div class="logo">
+      <h1><a href="home.html">Zoro</a></h1>
+      </div>
+    <nav>
+      <ul>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="soon.html">Soon</a></li>
+      <li class="user">Hello, ${
+        JSON.parse(localStorage.loggedUser).username
+      }</li>
+        <li><a class="logout" onclick="logout()">Logout</a></li>
+        </ul>
+        </nav>`;
+      document.body.prepend(header);
+
+      cards.forEach((card) => {
+        card.innerHTML += `
+          <div class="card-info">
+            <p>
+              Roronoa Zoro, also known as "Pirate Hunter" Zoro, is a fictional
+              character in the One Piece franchise.
+            </p>
+          </div>
+        `;
+      });
+    }
   }
 
-  // if the user is logged in it will redirect him to the home page
+  //* if the user is logged in it will redirect him to the home page
   if (
     localStorage.loggedUser &&
     (window.location.pathname == "/login.html" ||
@@ -223,11 +259,18 @@ window.addEventListener("load", () => {
     window.open("home.html", "_self");
   }
 
-  // Active Class
+  //* Active Class
   const links = document.querySelectorAll("header nav ul li a");
   links.forEach((link) => {
     if (window.location.pathname == link.pathname) {
       link.classList.add("active");
     }
   });
+
+  if (
+    window.location.pathname === "/soon.html" &&
+    JSON.parse(localStorage.loggedUser).email !== admin
+  ) {
+    window.open("home.html", "_self");
+  }
 });

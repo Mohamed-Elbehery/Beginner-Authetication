@@ -51,10 +51,7 @@ ul li a {
 .title {
   text-align: center;
 }
-/* Main Styles */
-
 /*! Form Styles (Signup & Login) */
-
 form {
   display: flex;
   align-items: center;
@@ -303,6 +300,7 @@ section .cards .card:hover .card-img img.hide-img {
   header {
     flex-direction: column;
     gap: 1rem;
+    font-size: 0.7rem;
   }
 
   .title.signup {
