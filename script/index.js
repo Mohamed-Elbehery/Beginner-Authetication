@@ -298,8 +298,8 @@ window.addEventListener("load", () => {
   //* if the user is logged in it will redirect him to the home page
   if (
     localStorage.loggedUser &&
-    (window.location.pathname == "/login.html" ||
-      window.location.pathname == "/index.html")
+    (window.location.pathname == "/Beginner-Authetication/login.html" ||
+      window.location.pathname == "/Beginner-Authetication/index.html")
   ) {
     window.open("home.html", "_self");
   }
@@ -313,7 +313,7 @@ window.addEventListener("load", () => {
   });
 
   if (
-    window.location.pathname === "/soon.html" &&
+    window.location.pathname === "/Beginner-Authetication/soon.html" &&
     JSON.parse(localStorage.loggedUser).email !== admin
   ) {
     window.open("home.html", "_self");
