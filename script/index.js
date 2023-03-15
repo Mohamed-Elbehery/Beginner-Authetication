@@ -154,20 +154,24 @@ const saveChanges = () => {
   }
 };
 
+// Will be triggered when the add button is clicked
 const addPost = () => {
-  let post = {
-    imgUrl: imgUrl.value,
-    description: description.value,
-  };
+  if (imgUrl.value.length > 0 && description.value.length > 0) {
+    let post = {
+      imgUrl: imgUrl.value,
+      description: description.value,
+    };
 
-  setTimeout(() => {
-    imgUrl.value = description.value = "";
-  }, 300);
+    setTimeout(() => {
+      imgUrl.value = description.value = "";
+    }, 300);
 
-  posts.push(post);
-  localStorage.setItem("posts", JSON.stringify(posts));
+    posts.push(post);
+    localStorage.setItem("posts", JSON.stringify(posts));
+  }
 };
 
+// Will be triggered when the add button is clicked or Loading the Website
 const displayPosts = () => {
   posts.forEach((card) => {
     const cardDiv = document.createElement("div");
@@ -177,15 +181,54 @@ const displayPosts = () => {
     cardImgContainer.classList.add("card-img");
     const cardImg = document.createElement("img");
     cardImg.setAttribute("src", card.imgUrl);
-    cardDiv.append(cardImgContainer);
     cardImgContainer.append(cardImg);
+    cardDiv.append(cardImgContainer);
     // Info
     const cardInfo = document.createElement("div");
     cardInfo.classList.add("card-info");
     const cardParagraph = document.createElement("p");
     cardParagraph.innerHTML = card.description;
     cardInfo.append(cardParagraph);
-    cardDiv.append(cardInfo);
+    // Need to Signup or Login
+    const needToDiv = document.createElement("div");
+    needToDiv.classList.add("need-to-login");
+    const loginAnchor = document.createElement("a");
+    loginAnchor.href = "login.html";
+    loginAnchor.innerHTML = "Login";
+    const orParagraph = document.createElement("p");
+    orParagraph.innerHTML = "Or";
+    const signupAnchor = document.createElement("a");
+    signupAnchor.innerHTML = "Signup";
+    signupAnchor.href = "index.html";
+
+    const login_signup_btns = document.querySelectorAll(".need-to-login a");
+    login_signup_btns.forEach((btn) => {
+      btn.style.cssText = "pointer-events: none";
+    });
+
+    const globalCards = document.querySelectorAll(".card");
+    const globalCardsImages = document.querySelectorAll(".card img");
+
+    globalCards.forEach((card) => {
+      card.addEventListener("transitionend", () => {
+        login_signup_btns.forEach((btn) => {
+          btn.style.cssText = "pointer-events: all;";
+        });
+      });
+    });
+
+    needToDiv.append(loginAnchor);
+    needToDiv.append(orParagraph);
+    needToDiv.append(signupAnchor);
+
+    if (!localStorage.loggedUser) {
+      cardDiv.append(needToDiv);
+      globalCardsImages.forEach((img) => {
+        img.style.cssText = "filter: blur(10px); transform: none;";
+      });
+    } else {
+      cardDiv.append(cardInfo);
+    }
 
     // Add to Cards Container
     if (cardsContainer) cardsContainer.appendChild(cardDiv);
@@ -289,10 +332,8 @@ window.addEventListener("load", () => {
     <nav>
       <ul>
       <li><a href="home.html">Home</a></li>
-      <li class="user">Hello, ${
-        JSON.parse(localStorage.loggedUser).username
-      }</li>
-        <li><a class="logout" onclick="logout()">Logout</a></li>
+      <li><a class="logout" onclick="logout()">Logout</a></li>
+      <li class="user">${JSON.parse(localStorage.loggedUser).username}</li>
         </ul>
         </nav>`;
       document.body.prepend(header);
@@ -318,10 +359,8 @@ window.addEventListener("load", () => {
       <ul>
       <li><a href="home.html">Home</a></li>
       <li><a href="add-posts.html">Add</a></li>
-      <li class="user">Hello, ${
-        JSON.parse(localStorage.loggedUser).username
-      }</li>
-        <li><a class="logout" onclick="logout()">Logout</a></li>
+      <li><a class="logout" onclick="logout()">Logout</a></li>
+      <li class="user">${JSON.parse(localStorage.loggedUser).username}</li>
         </ul>
         </nav>`;
       document.body.prepend(header);
