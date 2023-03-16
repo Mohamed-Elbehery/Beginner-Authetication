@@ -12,17 +12,22 @@ const confirmPassword = document.querySelector("#confirm-password");
 const signupBtn = document.querySelector("#signup");
 const loginBtn = document.querySelector("#login");
 const links = document.querySelectorAll("header nav ul li a");
-const cardsContainer = document.querySelector(".landing .cards");
-const cards = document.querySelectorAll(".landing .cards .card");
-const cardsImages = document.querySelectorAll(".landing .cards .card img");
 const checkBtn = document.querySelector("#check-btn");
 let checkedEmail = {};
 let isHere = false;
 const saveBtn = document.querySelector("#save-btn");
 const addBtn = document.querySelector("#add-btn");
+//! Cards
+const cardsContainer = document.querySelector(".landing .cards");
+const cards = document.querySelectorAll(".landing .cards .card");
+const cardsImages = document.querySelectorAll(".landing .cards .card img");
 const imgUrl = document.querySelector("#img-url");
 const description = document.querySelector("#description");
 let posts = [];
+//! Active Card
+const closeActive = document.querySelector("#close");
+const activeCardContaienr = document.querySelector(".active-card-container");
+const activeCard = document.querySelector(".active-card");
 //! Error spans
 const usernameError = document.querySelector("#name-error");
 const emailError = document.querySelector("#email-error");
@@ -30,12 +35,15 @@ const passwordError = document.querySelector("#password-error");
 const confirmError = document.querySelector("#confirm-error");
 const error = document.querySelector("#error");
 const loginError = document.querySelector("#login-error");
+const imgUrlError = document.querySelector("#imgUrl-error");
+const descriptionError = document.querySelector("#description-error");
 let users = [];
-
 //! Admin Account
-const admin = "admin@amit.com";
-const adminPassword = "admin";
-const adminName = "Admin";
+const admin = {
+  username: "Admin",
+  email: "admin@amit.com",
+  password: "admin",
+};
 
 //! Functions
 // Will be triggered when the signup button is clicked
@@ -110,15 +118,8 @@ const login = () => {
     password.focus();
   } else {
     users.forEach((user) => {
-      if (email.value == admin && password.value == adminPassword) {
-        localStorage.setItem(
-          "loggedUser",
-          JSON.stringify({
-            username: adminName,
-            email: admin,
-            password: adminPassword,
-          })
-        );
+      if (email.value == admin.email && password.value == admin.password) {
+        localStorage.setItem("loggedUser", JSON.stringify(admin));
         setTimeout(() => {
           window.open("home.html", "_self");
         }, 1000);
@@ -215,6 +216,14 @@ const addPost = () => {
 
     posts.push(post);
     localStorage.setItem("posts", JSON.stringify(posts));
+  } else {
+    if (imgUrl.value.length == 0) {
+      imgUrlError.innerHTML = "Image Url is required";
+      imgUrl.focus();
+    } else if (description.value.length == 0) {
+      descriptionError.innerHTML = "Description is required";
+      description.focus();
+    }
   }
 };
 
@@ -248,31 +257,12 @@ const displayPosts = () => {
     signupAnchor.innerHTML = "Signup";
     signupAnchor.href = "index.html";
 
-    const login_signup_btns = document.querySelectorAll(".need-to-login a");
-    login_signup_btns.forEach((btn) => {
-      btn.style.cssText = "pointer-events: none";
-    });
-
-    const globalCards = document.querySelectorAll(".card");
-    const globalCardsImages = document.querySelectorAll(".card img");
-
-    globalCards.forEach((card) => {
-      card.addEventListener("transitionend", () => {
-        login_signup_btns.forEach((btn) => {
-          btn.style.cssText = "pointer-events: all;";
-        });
-      });
-    });
-
     needToDiv.append(loginAnchor);
     needToDiv.append(orParagraph);
     needToDiv.append(signupAnchor);
 
     if (!localStorage.loggedUser) {
       cardDiv.append(needToDiv);
-      globalCardsImages.forEach((img) => {
-        img.style.cssText = "filter: blur(10px); transform: none;";
-      });
     } else {
       cardDiv.append(cardInfo);
     }
@@ -293,11 +283,17 @@ const validate = (e) => {
   else if (e.target.id == "confirm-password") confirmError.innerHTML = "";
   else if (e.target.id == "password" && e.target.name == "login-password")
     passwordError.innerHTML = "";
+  else if (e.target.id == "img-url") imgUrlError.innerHTML = "";
+  else if (e.target.id == "description") descriptionError.innerHTML = "";
 };
 
 // Will prevent the form from submitting
 const handleSubmit = (e) => {
   e.preventDefault();
+};
+
+const closeActiveCard = () => {
+  activeCardContaienr.style.display = "none";
 };
 
 //! Event Listeners
@@ -307,6 +303,7 @@ if (loginBtn) loginBtn.addEventListener("click", login);
 if (checkBtn) checkBtn.addEventListener("click", checkEmail);
 if (saveBtn) saveBtn.addEventListener("click", saveChanges);
 if (addBtn) addBtn.addEventListener("click", addPost);
+if (closeActive) closeActive.addEventListener("click", closeActiveCard);
 
 //! onload
 window.addEventListener("load", () => {
@@ -327,36 +324,9 @@ window.addEventListener("load", () => {
       </ul>
     </nav>`;
     document.body.prepend(header);
-
-    cardsImages.forEach((cardImage) => {
-      cardImage.classList.add("hide-img");
-    });
-
-    cards.forEach((card) => {
-      card.innerHTML += `
-      <div class="need-to-login">
-        <a href="login.html">Login</a>
-        <p>Or</p>
-        <a href="index.html">Signup</a>
-      </div>
-    `;
-    });
-
-    const login_signup_btns = document.querySelectorAll(".need-to-login a");
-    login_signup_btns.forEach((btn) => {
-      btn.style.cssText = "pointer-events: none";
-    });
-
-    cards.forEach((card) => {
-      card.addEventListener("transitionend", () => {
-        login_signup_btns.forEach((btn) => {
-          btn.style.cssText = "pointer-events: all;";
-        });
-      });
-    });
   } else {
     //* if the user is logged in
-    if (JSON.parse(localStorage.loggedUser).email != admin) {
+    if (JSON.parse(localStorage.loggedUser).email != admin.email) {
       const header = document.createElement("header");
       header.innerHTML = `
     <div class="logo">
@@ -370,17 +340,6 @@ window.addEventListener("load", () => {
         </ul>
         </nav>`;
       document.body.prepend(header);
-
-      cards.forEach((card) => {
-        card.innerHTML += `
-          <div class="card-info">
-            <p>
-              Roronoa Zoro, also known as "Pirate Hunter" Zoro, is a fictional
-              character in the One Piece franchise.
-            </p>
-          </div>
-        `;
-      });
     } else {
       //* if the admin is logged in
       const header = document.createElement("header");
@@ -397,27 +356,7 @@ window.addEventListener("load", () => {
         </ul>
         </nav>`;
       document.body.prepend(header);
-
-      cards.forEach((card) => {
-        card.innerHTML += `
-          <div class="card-info">
-            <p>
-              Roronoa Zoro, also known as "Pirate Hunter" Zoro, is a fictional
-              character in the One Piece franchise.
-            </p>
-          </div>
-        `;
-      });
     }
-  }
-
-  //* if the user is logged in it will redirect him to the home page
-  if (
-    localStorage.loggedUser &&
-    (window.location.pathname == "/Beginner-Authetication/login.html" ||
-      window.location.pathname == "/Beginner-Authetication/index.html")
-  ) {
-    window.open("home.html", "_self");
   }
 
   //* Active Class
@@ -428,19 +367,21 @@ window.addEventListener("load", () => {
     }
   });
 
+  //! Redirections
+  //* => if the user is logged in it will redirect him to the home page
   if (
-    window.location.pathname === "/Beginner-Authetication/add-posts.html" &&
-    JSON.parse(localStorage.loggedUser).email !== admin
+    localStorage.loggedUser &&
+    (window.location.pathname == "/Beginner-Authetication/login.html" ||
+      window.location.pathname == "/Beginner-Authetication/index.html")
   ) {
     window.open("home.html", "_self");
   }
 
-  if (localStorage.checkedEmail) {
-    checkedEmail = JSON.parse(localStorage.checkedEmail);
-  }
-
-  if (localStorage.posts) {
-    posts = JSON.parse(localStorage.posts);
+  if (
+    window.location.pathname === "/Beginner-Authetication/add-posts.html" &&
+    JSON.parse(localStorage.loggedUser).email !== admin.email
+  ) {
+    window.open("home.html", "_self");
   }
 
   if (
@@ -450,5 +391,24 @@ window.addEventListener("load", () => {
     window.open("check-email.html", "_self");
   }
 
+  //* => Assigning the checkedEmail Variable to the local storage user
+  if (localStorage.checkedEmail) {
+    checkedEmail = JSON.parse(localStorage.checkedEmail);
+  }
+
+  //* => Assigning the posts Variable to the local storage posts
+  if (localStorage.posts) {
+    posts = JSON.parse(localStorage.posts);
+  }
+
   displayPosts();
+  if (localStorage.loggedUser) {
+    const globalCards = document.querySelectorAll(".cards .card");
+    globalCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        activeCardContaienr.style.display = "flex";
+        activeCard.style.backgroundImage = `url(${card.children[0].children[0].src})`;
+      });
+    });
+  }
 });

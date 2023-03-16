@@ -12,15 +12,23 @@
     <form>
       <div>
         <label>Image Url</label>
-        <input id="img-url" type="text" placeholder="Enter Img Url..." />
+        <span class="error" id="imgUrl-error"></span>
+        <input
+          id="img-url"
+          type="text"
+          placeholder="Enter Img Url..."
+          oninput="validate()"
+        />
       </div>
       <div>
         <label>Description</label>
+        <span class="error" id="description-error"></span>
         <textarea
           id="description"
           cols="30"
           rows="10"
           placeholder="Enter Post Description..."
+          oninput="validate()"
         ></textarea>
       </div>
       <button id="add-btn">Add Post</button>

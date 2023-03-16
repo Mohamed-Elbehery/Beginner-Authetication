@@ -51,6 +51,34 @@ ul li a {
 .title {
   text-align: center;
 }
+/*! Header Section */
+header {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: var(--header-width);
+  margin-left: calc((100% - var(--header-width)) / 2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(211, 211, 211, 0.1);
+  backdrop-filter: blur(0.5rem);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  z-index: 999;
+}
+
+header .logo h1 a {
+  font-size: 2rem;
+  color: rgb(255, 144, 117);
+}
+
+header nav ul {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
 /*! Form Styles (Signup & Login) */
 form {
   display: flex;
@@ -130,38 +158,7 @@ form button:active {
   font-size: 0.85rem;
   font-weight: bold;
 }
-
-/*! Header Section */
-header {
-  position: fixed;
-  inset: 0 auto auto 0;
-  width: var(--header-width);
-  margin-left: calc((100% - var(--header-width)) / 2);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: rgba(211, 211, 211, 0.1);
-  backdrop-filter: blur(0.5rem);
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-  z-index: 999;
-}
-
-header .logo h1 a {
-  font-size: 2rem;
-  color: rgb(255, 144, 117);
-}
-
-header nav ul {
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-}
-
 /*! Logout btn, username and active page */
-
 .user {
   color: rgba(255, 70, 117, 0.6);
   user-select: none;
@@ -265,6 +262,54 @@ section .cards .card:hover .card-img img {
 section .cards .card:hover .card-img img.hide-img {
   transform: none;
   filter: blur(10px);
+}
+
+section .active-card-container {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  display: none;
+}
+
+section .active-card-container .active-card {
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  min-width: 30%;
+  aspect-ratio: 16 / 9;
+  transition: 0.5s ease;
+}
+
+section .active-card-container #close {
+  position: absolute;
+  top: -100%;
+  right: -100%;
+}
+
+section .active-card-container #close:hover span {
+  background-color: rgb(255, 144, 117);
+}
+
+section .active-card-container #close span {
+  width: 35px;
+  height: 4px;
+  background-color: white;
+  display: block;
+  position: absolute;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+section .active-card-container #close span:first-child {
+  transform: rotate(45deg);
+}
+
+section .active-card-container #close span:last-child {
+  transform: rotate(-45deg);
 }
 
 /*! Media Queries */
