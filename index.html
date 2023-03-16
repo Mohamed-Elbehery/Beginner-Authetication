@@ -13,12 +13,22 @@
       <div>
         <label>Name</label>
         <span id="name-error" class="error"></span>
-        <input type="text" placeholder="Enter Your Name..." />
+        <input
+          id="name"
+          type="text"
+          placeholder="Enter Your Name..."
+          oninput="validate()"
+        />
       </div>
       <div>
         <label>Email</label>
         <span id="email-error" class="error"></span>
-        <input type="email" placeholder="Enter Your Email..." />
+        <input
+          id="email"
+          type="text"
+          placeholder="Enter Your Email..."
+          oninput="validate()"
+        />
       </div>
       <div>
         <label>Password</label>
@@ -27,6 +37,7 @@
           id="password"
           type="password"
           placeholder="Enter Your Pasword..."
+          oninput="validate()"
         />
       </div>
       <div>
@@ -36,6 +47,7 @@
           id="confirm-password"
           type="password"
           placeholder="Confirm Your Pasword..."
+          oninput="validate()"
         />
       </div>
       <span id="error" class="error"></span>

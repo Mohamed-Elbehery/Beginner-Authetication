@@ -60,7 +60,7 @@ form {
   background-color: rgba(128, 128, 128, 0.35);
   outline: 2px solid rgba(255, 255, 255, 1);
   backdrop-filter: blur(5px);
-  min-width: 30%;
+  width: 50%;
   gap: 1.75rem;
   border-radius: 0.625rem;
   padding: 2rem 1rem;
@@ -127,7 +127,7 @@ form button:active {
 
 .error {
   color: red;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: bold;
 }
 

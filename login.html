@@ -13,7 +13,12 @@
       <div>
         <label>Email</label>
         <span class="error" id="email-error"></span>
-        <input type="email" placeholder="Enter Your Email..." />
+        <input
+          id="email"
+          type="text"
+          placeholder="Enter Your Email..."
+          oninput="validate()"
+        />
       </div>
       <div>
         <label>Password</label>
@@ -21,9 +26,12 @@
         <input
           id="password"
           type="password"
+          name="login-password"
           placeholder="Enter Your Pasword..."
+          oninput="validate()"
         />
       </div>
+      <span class="error" id="login-error"></span>
       <button id="login">Login</button>
       <a href="index.html">You Don't Have an Account? Register</a>
       <a href="check-email.html">You Forgot Your Password? Reset Password</a>

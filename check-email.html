@@ -13,7 +13,12 @@
       <div>
         <label>Email</label>
         <span class="error" id="email-error"></span>
-        <input type="email" placeholder="Enter Your Email..." />
+        <input
+          id="email"
+          type="text"
+          placeholder="Enter Your Email..."
+          onkeyup="validate()"
+        />
       </div>
       <button id="check-btn">Check Email</button>
       <a href="index.html">Return to Login Page</a>

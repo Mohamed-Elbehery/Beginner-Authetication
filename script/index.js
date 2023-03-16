@@ -1,7 +1,12 @@
+//! Regular Expressions
+const nameReg = /\w{3,}/; // example (amr - omar - mohamed - moustafa)
+const emailReg = /\w+(.)*(\W+)?@\w+\.\w+/; // example ( dev.elbehery@gmail.com || moaaz@jr.anyTopDomainLevel )
+const passwordReg = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[0-9a-zA-Z]{8,20}$/; // example As4112002
+
 //! Variables
 const form = document.querySelector("form");
-const username = document.querySelector('input[type="text"]');
-const email = document.querySelector('input[type="email"]');
+const username = document.querySelector("#name");
+const email = document.querySelector("#email");
 const password = document.querySelector("#password");
 const confirmPassword = document.querySelector("#confirm-password");
 const signupBtn = document.querySelector("#signup");
@@ -24,31 +29,44 @@ const emailError = document.querySelector("#email-error");
 const passwordError = document.querySelector("#password-error");
 const confirmError = document.querySelector("#confirm-error");
 const error = document.querySelector("#error");
+const loginError = document.querySelector("#login-error");
 let users = [];
 
 //! Admin Account
-const adminName = "Admin";
 const admin = "admin@amit.com";
 const adminPassword = "admin";
+const adminName = "Admin";
 
 //! Functions
 // Will be triggered when the signup button is clicked
 const signup = () => {
   let isDuplicated = false;
-  if (username.value == "") {
+  if (!nameReg.test(username.value)) {
     username.focus();
-    usernameError.innerHTML = "Username is Required";
-  } else if (email.value == "") {
+    usernameError.innerHTML = "Name Field Must Contain Atleast 3 Characters";
+    error.innerHTML = "";
+  } else if (!emailReg.test(email.value)) {
     email.focus();
-    emailError.innerHTML = "Email is Required";
-  } else if (password.value == "") {
+    emailError.innerHTML = "Please Enter Valid Email";
+    error.innerHTML = "";
+  } else if (!passwordReg.test(password.value)) {
     password.focus();
-    passwordError.innerHTML = "Password is Required";
-  } else if (confirmPassword.value == "") {
+    passwordError.innerHTML =
+      "Make sure it's at least between 8 to 20 characters including a number, an uppercase and lowercase letter";
+    error.innerHTML = "";
+  } else if (
+    confirmPassword.value == "" ||
+    confirmPassword.value != password.value
+  ) {
     confirmPassword.focus();
-  } else if (confirmPassword.value != password.value) {
-    confirmError.innerHTML = "Password does not match";
+    confirmError.innerHTML = "Passwords don't match";
+    error.innerHTML = "";
   } else {
+    usernameError.innerHTML =
+      emailError.innerHTML =
+      passwordError.innerHTML =
+      confirmError.innerHTML =
+        "";
     const user = {
       username: username.value,
       email: email.value,
@@ -81,30 +99,40 @@ const signup = () => {
 
 // Will be triggered when the login button is clicked
 const login = () => {
-  localStorage.removeItem("checkedEmail");
-  if (email.value == "") {
-    if (emailError) emailError.innerHTML = "Email is Required";
-  } else if (password.value == "") {
-    if (passwordError) passwordError.innerHTML = "Password is Required";
+  if (!emailReg.test(email.value)) {
+    if (emailError) {
+      emailError.innerHTML = "Please Enter Valid Email...";
+      email.focus();
+    }
+  } else if (password.value.length == 0) {
+    if (passwordError)
+      passwordError.innerHTML = "Please Enter Your Password...";
+    password.focus();
   } else {
     users.forEach((user) => {
-      if (email.value == user.email && password.value == user.password) {
-        localStorage.setItem("loggedUser", JSON.stringify(user));
-        setTimeout(() => {
-          window.open("home.html", "_self");
-        }, 1000);
-      } else if (email.value == admin && password.value == adminPassword) {
+      if (email.value == admin && password.value == adminPassword) {
         localStorage.setItem(
           "loggedUser",
           JSON.stringify({
             username: adminName,
             email: admin,
-            password: "admin",
+            password: adminPassword,
           })
         );
         setTimeout(() => {
           window.open("home.html", "_self");
         }, 1000);
+      } else if (email.value == user.email && password.value == user.password) {
+        localStorage.setItem("loggedUser", JSON.stringify(user));
+        setTimeout(() => {
+          window.open("home.html", "_self");
+        }, 1000);
+      } else {
+        loginError.innerHTML = "Invalid Email or Password...";
+      }
+
+      if (localStorage.loggedUser) {
+        loginError.innerHTML = "";
       }
     });
   }
@@ -118,6 +146,10 @@ const logout = () => {
 
 // Will check if the user is in the users array
 const checkEmail = () => {
+  if (!emailReg.test(email.value)) {
+    emailError.innerHTML = "Please Enter Valid Email...";
+    email.focus();
+  }
   users.forEach((user) => {
     if (user.email == email.value) {
       isHere = true;
@@ -128,6 +160,8 @@ const checkEmail = () => {
     localStorage.setItem("checkedEmail", JSON.stringify(checkedEmail));
     email.value = "";
     window.open("reset-password.html", "_self");
+  } else {
+    emailError.innerHTML = "Wrong Email make sure it's correct";
   }
 };
 
@@ -150,7 +184,20 @@ const saveChanges = () => {
 
     localStorage.setItem("users", JSON.stringify(users));
 
-    window.open("login.html", "_self");
+    setTimeout(() => {
+      localStorage.removeItem("checkedEmail");
+      window.open("login.html", "_self");
+    }, 1000);
+  } else {
+    if (!passwordReg.test(password.value)) {
+      passwordError.innerHTML =
+        "Make sure it's at least between 8 to 20 characters including a number, an uppercase and lowercase letter";
+      password.focus();
+    } else if (confirmPassword.value.length == 0) {
+      confirmPassword.focus();
+      confirmError.innerHTML = "Enter your password again please...";
+    } else if (password.value != confirmPassword.value)
+      confirmError.innerHTML = "Passwords don't match";
   }
 };
 
@@ -235,13 +282,17 @@ const displayPosts = () => {
   });
 };
 
-// Will be triggered on each key press
-const validate = (selector, span, errorValue) => {
-  if (selector.value.length > 0) {
-    if (span) span.innerHTML = "";
-  } else {
-    if (span) span.innerHTML = errorValue;
-  }
+const validate = (e) => {
+  e = e || window.event;
+  if (e.target.id == "name" && nameReg.test(username.value))
+    usernameError.innerHTML = "";
+  else if (e.target.id == "email" && emailReg.test(email.value))
+    emailError.innerHTML = "";
+  else if (e.target.id == "password" && passwordReg.test(password.value))
+    passwordError.innerHTML = "";
+  else if (e.target.id == "confirm-password") confirmError.innerHTML = "";
+  else if (e.target.id == "password" && e.target.name == "login-password")
+    passwordError.innerHTML = "";
 };
 
 // Will prevent the form from submitting
@@ -257,24 +308,6 @@ if (checkBtn) checkBtn.addEventListener("click", checkEmail);
 if (saveBtn) saveBtn.addEventListener("click", saveChanges);
 if (addBtn) addBtn.addEventListener("click", addPost);
 
-//! Validation Styles
-if (username)
-  username.addEventListener("keyup", () =>
-    validate(username, usernameError, "Username is Required")
-  );
-if (email)
-  email.addEventListener("keyup", () =>
-    validate(email, emailError, "Email is Required")
-  );
-if (password)
-  password.addEventListener("keyup", () =>
-    validate(password, passwordError, "Password is Required")
-  );
-if (confirmPassword)
-  confirmPassword.addEventListener("keyup", () =>
-    validate(confirmPassword, confirmError, "Password does not match")
-  );
-
 //! onload
 window.addEventListener("load", () => {
   if (localStorage.users) users = JSON.parse(localStorage.users);
@@ -284,7 +317,7 @@ window.addEventListener("load", () => {
     const header = document.createElement("header");
     header.innerHTML = `
     <div class="logo">
-      <h1><a href="home.html">Zoro</a></h1>
+      <h1><a href="home.html">Logo</a></h1>
     </div>
     <nav>
       <ul>
@@ -327,7 +360,7 @@ window.addEventListener("load", () => {
       const header = document.createElement("header");
       header.innerHTML = `
     <div class="logo">
-      <h1><a href="home.html">Zoro</a></h1>
+      <h1><a href="home.html">Logo</a></h1>
       </div>
     <nav>
       <ul>
@@ -353,7 +386,7 @@ window.addEventListener("load", () => {
       const header = document.createElement("header");
       header.innerHTML = `
     <div class="logo">
-      <h1><a href="home.html">Zoro</a></h1>
+      <h1><a href="home.html">Logo</a></h1>
       </div>
     <nav>
       <ul>
@@ -408,6 +441,13 @@ window.addEventListener("load", () => {
 
   if (localStorage.posts) {
     posts = JSON.parse(localStorage.posts);
+  }
+
+  if (
+    window.location.pathname == "/Beginner-Authetication/reset-password.html" &&
+    localStorage.getItem("checkedEmail") == null
+  ) {
+    window.open("check-email.html", "_self");
   }
 
   displayPosts();
